@@ -13,8 +13,11 @@ export class MapaNativoComponent implements OnInit {
   @ViewChild('divMap') divMap: ElementRef; //recuperamos el elemento html
 
   mapa: google.maps.Map; //es un tipo especifico de la libreria de google maps
+  marcadores: google.maps.Marker[];
 
-  constructor() { }
+  constructor() {
+    this.marcadores = [];
+  }
 
   ngOnInit(): void {
 
@@ -26,7 +29,7 @@ export class MapaNativoComponent implements OnInit {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         this.cargarMapa(position);
-      })
+      });
     }
     else {
       console.log('Navegador no disponible');
@@ -54,14 +57,33 @@ export class MapaNativoComponent implements OnInit {
     });
     marcadorCentral.setMap(this.mapa); //asignarle un mapa al marcador
 
-    google.maps.event.addListener(this.mapa, 'click', (event: google.maps.MouseEvent) => {
+    google.maps.event.addListener(this.mapa, 'click', (event: google.maps.MouseEvent) => { //evento click sobre el mapa
       const marcadorDinamico = new google.maps.Marker({
         position: event.latLng, //la posicion pulsada se guarda en latLng
         animation: google.maps.Animation.DROP
       });
       marcadorDinamico.setDraggable(true); //para que el marcador se pueda mover
       marcadorDinamico.setMap(this.mapa);
-    })
+      this.marcadores.push(marcadorDinamico); //guardo el marcador
+
+      google.maps.event.addListener(marcadorDinamico, 'click', event => { //evento click sobre el marcador
+        marcadorDinamico.setMap(null); //eliminar marcador
+      });
+
+      google.maps.event.addListener(marcadorDinamico, 'mouseover', event => { //evento cuando pasamos sobre el marcador
+        marcadorDinamico.setAnimation(google.maps.Animation.BOUNCE);
+      });
+
+      google.maps.event.addListener(marcadorDinamico, 'mouseout', event => { //evento cuando salimos del marcador
+        marcadorDinamico.setAnimation(null);
+      });
+    });
+  }
+
+  borrarMarcadores() {
+    for (let marcador of this.marcadores) {
+      marcador.setMap(null);
+    }
   }
 
 }
