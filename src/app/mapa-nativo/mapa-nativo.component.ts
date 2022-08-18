@@ -41,6 +41,18 @@ export class MapaNativoComponent implements OnInit {
     }
 
     this.mapa = new google.maps.Map(this.divMap.nativeElement, opciones);
+
+    const icono = {
+      url: 'https://cdn-icons-png.flaticon.com/512/535/535188.png',
+      scaledSize: new google.maps.Size(60, 60)
+    }
+
+    const markerPosition = new google.maps.Marker({
+      position: this.mapa.getCenter(), //obtenemos el centro del mapa
+      animation: google.maps.Animation.DROP, //animacion en la cual el marcador "cae" cuando cargamos la pag
+      icon: icono //ícono personalizado
+    });
+    markerPosition.setMap(this.mapa); //asignarle un mapa al marcador
   }
 
 }
