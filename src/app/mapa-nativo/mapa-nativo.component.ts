@@ -20,39 +20,18 @@ export class MapaNativoComponent implements OnInit {
 
   }
 
-  //lo cargamos acá porque si lo hacemos en ngOnInit nos da error, ya que se ejecuta antes de que pueda cargarse
   ngAfterViewInit(): void {
-    //obtenemos posicion actual y se la pasamos a "cargarMapa"
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        this.cargarMapa(position);
-      })
-    }
-    else {
-      console.log('Navegador no disponible');
-    }
+    this.cargarMapa();
   }
 
-  cargarMapa(position) {
+  cargarMapa() {
     const opciones = {
-      center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+      center: new google.maps.LatLng(0, 0),
       zoom: 17,
       mapTypeId: google.maps.MapTypeId.HYBRID
     }
 
     this.mapa = new google.maps.Map(this.divMap.nativeElement, opciones);
-
-    const icono = {
-      url: 'https://cdn-icons-png.flaticon.com/512/535/535188.png',
-      scaledSize: new google.maps.Size(60, 60)
-    }
-
-    const markerPosition = new google.maps.Marker({
-      position: this.mapa.getCenter(), //obtenemos el centro del mapa
-      animation: google.maps.Animation.DROP, //animacion en la cual el marcador "cae" cuando cargamos la pag
-      icon: icono //ícono personalizado
-    });
-    markerPosition.setMap(this.mapa); //asignarle un mapa al marcador
   }
 
 }
