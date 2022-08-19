@@ -29,6 +29,7 @@ export class MapaNativoComponent implements OnInit {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         this.cargarMapa(position);
+        this.cargarAutocomplete();
       });
     }
     else {
@@ -84,6 +85,27 @@ export class MapaNativoComponent implements OnInit {
     for (let marcador of this.marcadores) {
       marcador.setMap(null);
     }
+  }
+
+  //NO FUNCIONA (no se porqué)
+  cargarAutocomplete() {
+    //inserto el autocomplete en el input
+    const autocomplete = new google.maps.places.Autocomplete(
+      document.querySelector('#inputPlaces')
+    );
+
+    //centro el mapa en el lugar que busco
+    google.maps.event.addListener(autocomplete, 'place_changed', event => {
+      const place = autocomplete.getPlace();
+      console.log(place);
+
+      this.mapa.setCenter(place.geometry.location);
+
+      const marker = new google.maps.Marker({
+        position: place.geometry.location
+      });
+      marker.setMap(this.mapa); //le agrego un marcador al mapa
+    })
   }
 
 }
