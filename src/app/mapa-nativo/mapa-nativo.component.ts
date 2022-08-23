@@ -105,7 +105,23 @@ export class MapaNativoComponent implements OnInit {
         position: place.geometry.location
       });
       marker.setMap(this.mapa); //le agrego un marcador al mapa
-    })
+    });
+  }
+
+  calcularRuta() {
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer();
+
+    directionsRenderer.setMap(this.mapa);
+
+    directionsService.route({
+      origin: 'Madrid, españa',
+      destination: 'Valencia, españa',
+      travelMode: google.maps.TravelMode.DRIVING
+    }, result => {
+      console.log(result);
+      directionsRenderer.setDirections(result);
+    });
   }
 
 }
